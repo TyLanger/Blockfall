@@ -10,13 +10,12 @@ public class Block : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
-    }
+        Health h = GetComponent<Health>();
+        if (h)
+        {
+            h.OnDeath += Die;
+        }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public void Fall()
@@ -32,5 +31,11 @@ public class Block : MonoBehaviour
     public bool HasFallen()
     {
         return hasFallen;
+    }
+
+    void Die()
+    {
+        // maybe it should fall if it hasn't?
+        Destroy(gameObject);
     }
 }

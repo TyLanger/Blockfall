@@ -12,6 +12,8 @@ public class Bullet : MonoBehaviour
     float lifetime = 10;
     float currentLife = 0;
 
+    bool isPlayerBullet = true;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -22,7 +24,7 @@ public class Bullet : MonoBehaviour
     {
         if(currentLife < 0)
         {
-            Cleanup();
+            TimeOut();
         }
         currentLife -= Time.deltaTime;
     }
@@ -46,7 +48,23 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+
+        if (isPlayerBullet && (other.GetComponent<Player>() != null))
+            return;
+
         // deal damage to other
+        Health health = other.GetComponent<Health>();
+        if(health)
+        {
+            health.TakeDamage(_damage);
+        }
+        // get destroyed when you hit something
+        Cleanup();
+    }
+
+    protected virtual void TimeOut()
+    {
+        Cleanup();
     }
 
     protected void Cleanup()

@@ -17,12 +17,17 @@ public class GridManager : MonoBehaviour
     int activeBlocks = 0;
     public float timeBetweenFalls = 1; //0.2 might be good
 
+    public bool DecayOnStart = false;
+
     // Start is called before the first frame update
     void Start()
     {
         blocks = new Block[xSize, zSize];
         SpawnBlocks();
-        StartCoroutine(DecayBlocks());
+        if (DecayOnStart)
+        {
+            StartCoroutine(DecayBlocks());
+        }
     }
 
     // Update is called once per frame

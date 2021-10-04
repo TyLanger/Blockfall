@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Shard : Bullet
 {
+    public event System.Action<Shard> OnDecayed;
+
     bool hasReleased = false;
 
     public override void Setup(float speed, int damage)
@@ -30,12 +32,12 @@ public class Shard : Bullet
             {
                 if(Vector3.Distance(transform.position, tetherTarget.position) > length)
                 {
-                    Cleanup();
+                    Decay();
                 }
             }
             else
             {
-                Cleanup();
+                Decay();
             }
 
             yield return null;
@@ -52,5 +54,18 @@ public class Shard : Bullet
             transform.LookAt(targetPoint);
             _moveSpeed = newMoveSpeed;
         }
+    }
+
+    protected override void TimeOut()
+    {
+        Decay();
+    }
+
+    void Decay()
+    {
+        // move too far away or let them time out
+        OnDecayed?.Invoke(this);
+
+        Cleanup();
     }
 }

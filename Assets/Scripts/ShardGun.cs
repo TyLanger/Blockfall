@@ -35,11 +35,12 @@ public class ShardGun : Gun
             currentOffset = ((currentOffset+1) % shardOffsetPoints.Length);
             copy.SetTether(player.transform, tetherLength);
 
-            copy.OnDestroyed += ShardDecayed;
+            copy.OnDecayed += ShardDecayed;
             ReleaseAllShards += copy.Release;
 
             numShards++;
-            if(numShards >= numNeeded)
+
+            if (numShards >= numNeeded)
             {
                 numShards = 0;
                 ReleaseAllShards?.Invoke(aimPoint, releasedMoveSpeed);
@@ -53,7 +54,8 @@ public class ShardGun : Gun
     {
         // ran out of tether length and shard dissappeared
         ReleaseAllShards -= ((Shard)copy).Release;
+
         numShards = Math.Max(0, (numShards - 1));
-        
+
     }
 }
