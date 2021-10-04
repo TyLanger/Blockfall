@@ -9,6 +9,7 @@ public class Player : MonoBehaviour
     Vector2 moveInput;
 
     Camera mainCam;
+    Vector3 eyeLookPoint;
 
     public Gun gun;
 
@@ -16,6 +17,7 @@ public class Player : MonoBehaviour
     void Awake()
     {
         mainCam = Camera.main;
+        eyeLookPoint = Vector3.zero;
     }
 
     // Update is called once per frame
@@ -30,13 +32,13 @@ public class Player : MonoBehaviour
         if (eyePlane.Raycast(CameraRay, out float cameraDist))
         {
             Vector3 lookPoint = CameraRay.GetPoint(cameraDist);
-            Vector3 eyeLookPoint = new Vector3(lookPoint.x, transform.position.y, lookPoint.z);
+            eyeLookPoint = new Vector3(lookPoint.x, transform.position.y, lookPoint.z);
             transform.LookAt(eyeLookPoint);
         }
 
         if(Input.GetButton("Fire1"))
         {
-            gun?.Fire();
+            gun?.Fire(eyeLookPoint);
         }
     }
 

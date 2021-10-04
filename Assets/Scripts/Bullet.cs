@@ -4,27 +4,44 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
+    public event System.Action<Bullet> OnDestroyed;
 
-    float moveSpeed = 10;
-    int damage = 1;
+    public float _moveSpeed = 10;
+    int _damage = 1;
 
     float lifetime = 10;
+    float currentLife = 0;
 
     // Start is called before the first frame update
     void Start()
     {
-        Invoke("Cleanup", lifetime);
+        ResetLife();
+    }
+
+    private void Update()
+    {
+        if(currentLife < 0)
+        {
+            Cleanup();
+        }
+        currentLife -= Time.deltaTime;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        transform.position = Vector3.MoveTowards(transform.position, transform.position + transform.forward, moveSpeed * Time.fixedDeltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, transform.position + transform.forward, _moveSpeed * Time.fixedDeltaTime);
     }
 
-    public void Setup(float speed)
+    public virtual void Setup(float speed, int damage)
     {
-        moveSpeed = speed;
+        _moveSpeed = speed;
+        _damage = damage;
+    }
+
+    public void ResetLife()
+    {
+        currentLife = lifetime;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -32,8 +49,9 @@ public class Bullet : MonoBehaviour
         // deal damage to other
     }
 
-    private void Cleanup()
+    protected void Cleanup()
     {
+        OnDestroyed?.Invoke(this);
         Destroy(gameObject);
     }
 }
